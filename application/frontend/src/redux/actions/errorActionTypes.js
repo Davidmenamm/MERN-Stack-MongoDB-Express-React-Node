@@ -1,0 +1,1 @@
+export const FORM_SUBMIT_FAIL = 'FORM_SUBMIT_FAIL';
