@@ -222,61 +222,97 @@ app.post("/add-employee", upload.any(), (req, res) => {
   }
 });
 
-/* Api to update Product */
-app.post("/update-product", upload.any(), (req, res) => {
+/* Api to update Person */
+app.post("/update-person", upload.any(), (req, res) => {
   try {
+
+    console.log('in');
+    console.log(
+      req.body,
+      req.files
+    );
+
     if (req.files && req.body && req.body.name && req.body.apellido && req.body.cedula &&
       req.body.id && req.body.correo) {
-
-      employee.findById(req.body.id, (err, new_product) => {
-
+      console.log('body;', req.body);
+      employee.findById(req.body.id, (err, new_item) => {
+        // primary fields
         // if file already exist than remove it
-        if (req.files && req.files[0] && req.files[0].filename && new_product.image) {
-          var path = `./uploads/${new_product.image}`;
+        if (req.files && req.files[0] && req.files[0].filename && new_item.image) {
+          var path = `./uploads/${new_item.image}`;
           fs.unlinkSync(path);
         }
 
         if (req.files && req.files[0] && req.files[0].filename) {
-          new_product.image = req.files[0].filename;
+          new_item.image = req.files[0].filename;
         }
         if (req.body.name) {
-          new_product.name = req.body.name;
+          new_item.name = req.body.name;
         }
         if (req.body.apellido) {
-          new_product.apellido = req.body.apellido;
+          new_item.apellido = req.body.apellido;
         }
         if (req.body.cedula) {
-          new_product.cedula = req.body.cedula;
+          new_item.cedula = req.body.cedula;
         }
         if (req.body.correo) {
-          new_product.correo = req.body.correo;
+          new_item.correo = req.body.correo;
         }
-
-        new_product.save((err, data) => {
+        // secondary fields
+        if (req.body.fechaNac) {
+          new_item.fechaNac = req.body.fechaNac;
+        }
+        if (req.body.dir) {
+          new_item.dir = req.body.dir;
+        }
+        if (req.body.cel) {
+          new_item.cel = req.body.cel;
+        }
+        // vaccination fields
+        if (req.body.vaccine_status) {
+          new_item.vaccine_status = req.body.vaccine_status;
+        }
+        if (req.body.vaccine_type) {
+          new_item.vaccine_type = req.body.vaccine_type;
+        }
+        if (req.body.vaccine_date) {
+          new_item.vaccine_date = req.body.vaccine_date;
+        }
+        if (req.body.vaccine_dosis) {
+          new_item.vaccine_dosis = req.body.vaccine_dosis;
+        }
+        // save item
+        new_item.save((err, data) => {
           if (err) {
             res.status(400).json({
               errorMessage: err,
               status: false
             });
           } else {
+            console.log('DATA', new_item);
+            let objJsonStr = JSON.stringify(new_item);
+            let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
             res.status(200).json({
               status: true,
-              title: 'Product updated.'
+              title: 'Person updated.',
+              updatePath: objJsonB64
             });
           }
         });
 
       });
-
+    // error parameters
     } else {
       res.status(400).json({
         errorMessage: 'Add proper parameter first!',
         status: false
       });
     }
+  // error try-catch
   } catch (e) {
     res.status(400).json({
-      errorMessage: 'Something went wrong!',
+      errorMessage: `Something went wrong!`,
+      req: req.body,
       status: false
     });
   }
@@ -329,7 +365,11 @@ app.get("/get-product", (req, res) => {
     }
     var perPage = 5;
     var page = req.query.page || 1;
-    employee.find(query, { date: 1, name: 1, id: 1, apellido: 1, cedula: 1, correo: 1, image: 1 })
+    employee.find(query,
+      { name : 1, apellido : 1, cedula : 1, image : 1, correo : 1,
+        user_id: 1, fechaNac : 1, vaccine_dosis: 1, vaccine_date : 1,
+        vaccine_status: 1, vaccine_type : 1, _id : 1, date : 1, cel : 1, dir : 1}
+      )
       .skip((perPage * page) - perPage).limit(perPage)
       .then((data) => {
         employee.find(query).count()
@@ -353,6 +393,50 @@ app.get("/get-product", (req, res) => {
 
           });
 
+      }).catch(err => {
+        res.status(400).json({
+          errorMessage: err.message || err,
+          status: false
+        });
+      });
+  } catch (e) {
+    res.status(400).json({
+      errorMessage: 'Something went wrong!',
+      status: false
+    });
+  }
+
+});
+
+/* Api to get the information of a specific employee */
+app.get("/get-employee", (req, res) => {
+  try {
+    var query = {};
+    query["$and"] = [];
+    query["$and"].push({
+      is_delete: false,
+      user_id: req.user.user_id
+    });
+    if (req.query && req.query.user_id) {
+      query["$and"].push({
+        user_id : { $regex: req.query.user_id }
+      });
+    }
+    employee.find(query).count()
+      .then((count) => {
+        if (data && data.length > 0) {
+          res.status(200).json({
+            status: true,
+            title: 'Person retrived.',
+            person: data,
+            total: count,
+          });
+        } else {
+          res.status(400).json({
+            errorMessage: 'There is no person!',
+            status: false
+          });
+        }
       }).catch(err => {
         res.status(400).json({
           errorMessage: err.message || err,

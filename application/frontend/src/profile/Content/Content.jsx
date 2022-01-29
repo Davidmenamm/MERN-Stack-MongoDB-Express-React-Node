@@ -1,14 +1,14 @@
 import React from 'react'
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 
-import AccountSettings from './AccountSettings'
+import PerfilPersonal from './PerfilPersonal'
 import Actions from './Actions'
-import CompanySettings from './CompanySettings'
+import PerfilSalud from './PerfilSalud'
 import Notifications from './Notifications'
 
-const Content = () => {
-  const tabs = ['Account Settings', 'Company Settings', 'Notifications']
-
+const Content = ({person, set_person, update_person}) => {
+  const tabs = ['Personal', 'Salud', 'Notificaciones']
+  console.log('CONTENT!', person)
   return (
     <Box
       as="main"
@@ -44,10 +44,27 @@ const Content = () => {
 
         <TabPanels px={3} mt={5}>
           <TabPanel>
-            <AccountSettings />
+            <PerfilPersonal
+              set_person = {set_person}
+              person = {person ? person : null}
+              nombre = {person.name ? person.name : ""}
+              apellido = {person.apellido ? person.apellido : ""}
+              cedula = {person.cedula ? person.cedula : ""}
+              correo = {person.correo ? person.correo : ""}
+              fechaNac = {person.fechaNac ? person.fechaNac : ""}
+              dir = {person.dir ? person.dir : ""}
+              cel = {person.cel ? person.cel : ""}
+            />
           </TabPanel>
           <TabPanel>
-            <CompanySettings />
+            <PerfilSalud
+            set_person = {set_person}
+            person = {person ? person : null}
+            vaccine_status = {person.vaccine_status ? person.vaccine_status : ""}
+            vaccine_type = {person.vaccine_type  ? person.vaccine_type : ""}
+            vaccine_date = {person.vaccine_date  ? person.vaccine_date : ""}
+            vaccine_dosis = {person.vaccine_dosis  ? person.vaccine_dosis : ""}
+            />
           </TabPanel>
           <TabPanel>
             <Notifications />
@@ -55,7 +72,7 @@ const Content = () => {
         </TabPanels>
       </Tabs>
 
-      <Actions />
+      <Actions update_person={update_person}/>
     </Box>
   )
 }

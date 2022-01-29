@@ -1,5 +1,6 @@
 import React from 'react'
 import { useEffect, useRef } from 'react'
+import { useHistory } from "react-router-dom";
 import {
   Button,
   Input,
@@ -7,11 +8,13 @@ import {
   InputRightAddon,
   useClipboard,
   VStack,
+  Box
 } from '@chakra-ui/react'
 
 export default function Actions() {
   const value = 'https://apple.com/cook'
   const { hasCopied, onCopy } = useClipboard(value)
+  let history = useHistory();
 
   const profileUrl = useRef(null)
 
@@ -24,7 +27,7 @@ export default function Actions() {
 
   return (
     <VStack py={8} px={5} spacing={3}>
-      <Button w="full" variant="outline">
+      {/* <Button w="full" variant="outline">
         View Public Profile
       </Button>
       <InputGroup>
@@ -45,7 +48,10 @@ export default function Actions() {
             </svg>
           </Button>
         </InputRightAddon>
-      </InputGroup>
+      </InputGroup> */}
+      <Box mt={5} py={5} px={8} borderTopWidth={1} borderColor="brand.light">
+        <Button backgroundColor="brand.cadet" onClick={() => history.push("/dashboard")}> {'<'}Return</Button>
+      </Box>
     </VStack>
   )
 }

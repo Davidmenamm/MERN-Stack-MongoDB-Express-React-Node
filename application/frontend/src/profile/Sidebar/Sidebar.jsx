@@ -4,7 +4,7 @@ import Actions from './Actions'
 import Data from './Data'
 import Profile from './Profile'
 
-function Sidebar() {
+function Sidebar({person, set_person, update_person}) {
   return (
     <Box
       as="aside"
@@ -17,7 +17,13 @@ function Sidebar() {
       borderColor="brand.light"
       style={{ transform: 'translateY(-100px)' }}
     >
-      <Profile />
+      <Profile
+        name={person.name}
+        lastname={person.apellido}
+        profile_img={person.image}
+        set_profile_img={set_person}
+        update_person={update_person}
+      />
       <Data />
       <Actions />
     </Box>

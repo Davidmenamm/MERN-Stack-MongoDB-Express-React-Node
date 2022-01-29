@@ -21,7 +21,7 @@ ReactDOM.render(
                 <Switch>
                     <Route exact path='/' component={Login} />
                     <Route exact path='/register' component={Register} />
-                    <Route path='/profile' component={Profile} />
+                    <Route path='/profile/:person_data' component={Profile} />
                     <Route path='/dashboard' component={Dashboard} />
                     {/* <Route component={NotFound}/> */}
                 </Switch>

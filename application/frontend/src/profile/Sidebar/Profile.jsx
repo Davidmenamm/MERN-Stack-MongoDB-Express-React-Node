@@ -19,8 +19,8 @@ import {
   VStack,
 } from '@chakra-ui/react'
 
-function Profile() {
-  const [userProfile, setUserProfile] = useState(null)
+function Profile({ name, lastname, profile_img, set_profile_img, update_person }) {
+  // const [userProfile, setUserProfile] = useState(null)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const profileImage = useRef(null)
@@ -35,21 +35,21 @@ function Profile() {
 
     if (selected && ALLOWED_TYPES.includes(selected.type)) {
       let reader = new FileReader()
-      reader.onloadend = () => setUserProfile(reader.result)
+      reader.onloadend = () => set_profile_img(reader.result)
       return reader.readAsDataURL(selected)
     }
 
     onOpen()
   }
-
+  console.log('PROFILE', profile_img);
   return (
     <VStack spacing={3} py={5} borderBottomWidth={1} borderColor="brand.light">
       <Avatar
         size="2xl"
-        name="Tim Cook"
+        name={`${name} ${lastname}`} 
         cursor="pointer"
         onClick={openChooseImage}
-        src={userProfile ? userProfile : '/img/tim-cook.jpg'}
+        src={`http://localhost:2000/${profile_img}`}
       >
         <AvatarBadge bg="brand.blue" boxSize="1em">
           <svg width="0.4em" fill="currentColor" viewBox="0 0 20 20">
@@ -91,10 +91,10 @@ function Profile() {
       </Modal>
       <VStack spacing={1}>
         <Heading as="h3" fontSize="xl" color="brand.dark">
-          Tim Cook
+          {`${name} ${lastname}`} 
         </Heading>
         <Text color="brand.gray" fontSize="sm">
-          CEO of Apple
+          Working at Kruger
         </Text>
       </VStack>
     </VStack>

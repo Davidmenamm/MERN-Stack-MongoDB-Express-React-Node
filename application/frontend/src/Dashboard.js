@@ -165,7 +165,7 @@ export default class Dashboard extends Component {
     file.append('correo', this.state.correo);
     file.append('cedula', this.state.cedula);
 
-    axios.post('http://localhost:2000/update-product', file, {
+    axios.post('http://localhost:2000/update-person', file, {
       headers: {
         'content-type': 'multipart/form-data',
         'token': this.state.token
@@ -210,6 +210,7 @@ export default class Dashboard extends Component {
   };
 
   handleEdit = (data) => {
+    console.log('row', data);
     this.setState({
       openProductEditModal: true,
       id: data._id,
@@ -222,7 +223,11 @@ export default class Dashboard extends Component {
   };
 
   handleView = (data) => {
-    this.props.history.push(`/profile/${data._id}`);    
+    // encode obj to base 64
+    let objJsonStr = JSON.stringify(data);
+    let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
+    // change screen and send encoded string
+    this.props.history.push(`/profile/${objJsonB64}`);    
   };
 
   handleProductEditClose = () => {
@@ -454,6 +459,7 @@ export default class Dashboard extends Component {
                   <TableCell align="center">{row.correo}</TableCell>
                   <TableCell align="center">
                     <Button
+                      type = "button"
                       className="button_style"
                       variant="outlined"
                       color="primary"
@@ -463,6 +469,7 @@ export default class Dashboard extends Component {
                       View
                     </Button>
                     <Button
+                      type = "button"
                       className="button_style"
                       variant="outlined"
                       size="small"
@@ -471,6 +478,7 @@ export default class Dashboard extends Component {
                       Edit
                     </Button>
                     <Button
+                      type = "button"
                       className="button_style"
                       variant="outlined"
                       color="secondary"
