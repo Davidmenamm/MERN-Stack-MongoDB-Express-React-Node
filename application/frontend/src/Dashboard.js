@@ -60,6 +60,7 @@ export default class Dashboard extends Component {
         'token': this.state.token
       }
     }).then((res) => {
+      console.log('res.data.products', res.data.products);
       this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
     }).catch((err) => {
       swal({
@@ -482,8 +483,9 @@ export default class Dashboard extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
+              {console.log('productss', this.state.products)}
               {this.state.products.map((row) => (
-                <TableRow key={row.name}>
+                <TableRow key={`${row.name}-${row.apellido}`}>
                   <TableCell align="center" component="th" scope="row">
                     {row.name}
                   </TableCell>
