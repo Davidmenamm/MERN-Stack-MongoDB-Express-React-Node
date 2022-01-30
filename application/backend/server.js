@@ -194,6 +194,7 @@ app.post("/add-employee", upload.any(), (req, res) => {
       new_product.image = req.files[0].filename;
       new_product.correo = req.body.correo;
       new_product.user_id = req.user.id;
+      new_product.typeAccount = req.body.typeAccount;
       new_product.save((err, data) => {
         if (err) {
           res.status(400).json({

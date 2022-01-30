@@ -252,7 +252,9 @@ export default class Dashboard extends Component {
       <div>
         {this.state.loading && <LinearProgress size={40} />}
         <div>
-          <h2>Dashboard</h2>
+          <br />
+          <h1>Kruger Corp</h1>
+          <br />
           <Button
             className="button_style"
             variant="contained"
@@ -260,7 +262,7 @@ export default class Dashboard extends Component {
             size="small"
             onClick={this.handleProductOpen}
           >
-            Add Product
+            Add Employee
           </Button>
           <Button
             className="button_style"
@@ -356,21 +358,22 @@ export default class Dashboard extends Component {
             </Button>
             <Button
               disabled={this.state.name == '' || this.state.apellido == '' ||
-                this.state.correo == '' || this.state.cedula == '' || this.state.typeAccount == ''}
+                this.state.correo == '' || this.state.cedula == '' ||
+                this.state.typeAccount == ''}
               onClick={(e) => this.updateProduct()} color="primary" autoFocus>
               Edit Product
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* Add Product */}
+        {/* Add Employee */}
         <Dialog
           open={this.state.openProductModal}
           onClose={this.handleProductClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Add Product</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Add Employee</DialogTitle>
           <DialogContent>
             <TextField
               id="standard-basic"
@@ -451,9 +454,10 @@ export default class Dashboard extends Component {
             </Button>
             <Button
               disabled={this.state.name == '' || this.state.apellido == '' ||
-                this.state.correo == '' || this.state.cedula == '' || this.state.typeAccount || this.state.file == null}
+                this.state.correo == '' || this.state.cedula == '' ||
+                this.state.typeAccount == '' || this.state.file == null}
               onClick={(e) => this.addProduct()} color="primary" autoFocus>
-              Add Product
+              Add Employee
             </Button>
           </DialogActions>
         </Dialog>
