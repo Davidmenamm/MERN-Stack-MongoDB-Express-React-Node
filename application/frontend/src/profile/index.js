@@ -6,27 +6,63 @@ import swal from 'sweetalert';
 import axios from 'axios';
 
 export default () => {
+  console.log('HERE');
   // state
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(true);
-  const [person, setPerson] = useState({});
+  const [person, setPerson] = useState(null);
   // history
   const history = useHistory();
   // url params
   const { person_data } = useParams();
-  const person_obj = JSON.parse( Buffer.from(person_data, 'base64').toString('ascii') );
+  let person_obj = null;
+  if (person_data !== null && person_data !== 'user') {
+    person_obj  = JSON.parse( Buffer.from(person_data, 'base64').toString('ascii') );
+  }
   // use effect  
   useEffect(() => {
+    setLoading(true);
     // set state
     setPerson({ ...person_obj });
-    setLoading(false);
     // token
     let token_temp = localStorage.getItem('token');
-    console.log ('TOKEN', token_temp)
+    // console.log ('TOKEN', token_temp)
     if (!token_temp) {
+      // NOT logged in
       history.push('/login');
     } else {
+      // YES logged in
       setToken( token_temp );
+      // check person obj
+      console.log('PARAMS', token, person);
+      if(!person && person_obj === null){
+        console.log ('TOKEN', token_temp)
+        let id = localStorage.getItem('id');
+        console.log ('ID', id)
+        // API
+        const params = `?id=${id}`;
+        axios.get(`http://localhost:2000/get-employee${params}`, {
+          headers: {
+            'token': token_temp
+          }
+        }).then((res) => {
+          console.log('RES2', res.data.updatePath);
+          // update route to preserve ui functioning
+          // history.push(`/profile/${res.data.updatePath}`)
+          window.location.assign( `/profile/${res.data.updatePath}` );
+        }).catch((err) => {
+          console.log('RES1', err);
+          swal({
+            text: err.response.data.errorMessage,
+            icon: "error",
+            type: "error"
+          });
+        });
+        // set state
+        // setPerson({ ...person_obj });
+      }
+      // set loading
+      setLoading(false);
     }
     return () => {
     };
@@ -83,7 +119,7 @@ export default () => {
   // return
   return (
     <>
-      {loading == false && (
+      {loading === false && person && (
         <>
           <Cover cover_img = {person.image ? person.image : ""}/>
           <Page person = {person} set_person={setPerson} update_person={updatePerson}/>

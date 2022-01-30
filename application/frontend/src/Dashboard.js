@@ -15,6 +15,7 @@ export default class Dashboard extends Component {
       token: '',
       openProductModal: false,
       openProductEditModal: false,
+      typeAccount : '',
       id: '',
       name: '',
       apellido: '',
@@ -32,11 +33,15 @@ export default class Dashboard extends Component {
 
   componentDidMount = () => {
     let token = localStorage.getItem('token');
-    if (!token) {
+    if (!token ) {
       this.props.history.push('/login');
     } else {
       this.setState({ token: token }, () => {
         this.getProduct();
+        let typeAccount = localStorage.getItem('typeAccount');
+        if(typeAccount !== 'admin'){
+          this.props.history.push('/profile/user');
+        }
       });
     }
   }
@@ -100,8 +105,11 @@ export default class Dashboard extends Component {
     });
   }
 
-  logOut = () => {
-    localStorage.setItem('token', null);
+  logOut = () => {    
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('type_account');
+    localStorage.removeItem('id');
     this.props.history.push('/');
   }
 
@@ -126,6 +134,7 @@ export default class Dashboard extends Component {
     file.append('apellido', this.state.apellido);
     file.append('correo', this.state.correo);
     file.append('cedula', this.state.cedula);
+    file.append('typeAccount', this.state.typeAccount);
 
     axios.post('http://localhost:2000/add-employee', file, {
       headers: {
@@ -141,7 +150,7 @@ export default class Dashboard extends Component {
       });
 
       this.handleProductClose();
-      this.setState({ name: '', apellido: '', correo: '', cedula: '', file: null, page: 1 }, () => {
+      this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null, page: 1 }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -164,6 +173,7 @@ export default class Dashboard extends Component {
     file.append('apellido', this.state.apellido);
     file.append('correo', this.state.correo);
     file.append('cedula', this.state.cedula);
+    file.append('typeAcccount', this.state.typeAccount);
 
     axios.post('http://localhost:2000/update-person', file, {
       headers: {
@@ -179,7 +189,7 @@ export default class Dashboard extends Component {
       });
 
       this.handleProductEditClose();
-      this.setState({ name: '', apellido: '', correo: '', cedula: '', file: null }, () => {
+      this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null }, () => {
         this.getProduct();
       });
     }).catch((err) => {
@@ -196,6 +206,7 @@ export default class Dashboard extends Component {
   handleProductOpen = () => {
     this.setState({
       openProductModal: true,
+      typeAccount: '',
       id: '',
       name: '',
       apellido: '',
@@ -213,6 +224,7 @@ export default class Dashboard extends Component {
     console.log('row', data);
     this.setState({
       openProductEditModal: true,
+      typeAccount: data.typeAccount,
       id: data._id,
       name: data.name,
       apellido: data.apellido,
@@ -307,6 +319,16 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Correo Electrónico"
               required
+            /><br />
+            <TextField
+              id="standard-basic"
+              type="text"
+              autoComplete="off"
+              name="typeAccount"
+              value={this.state.typeAccount}
+              onChange={this.onChange}
+              placeholder="Tipo de Cuenta"
+              required
             /><br /><br />
             <Button
               variant="contained"
@@ -332,7 +354,8 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.apellido == '' || this.state.correo == '' || this.state.cedula == ''}
+              disabled={this.state.name == '' || this.state.apellido == '' ||
+                this.state.correo == '' || this.state.cedula == '' || this.state.typeAccount == ''}
               onClick={(e) => this.updateProduct()} color="primary" autoFocus>
               Edit Product
             </Button>
@@ -387,6 +410,16 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Correo Electrónico"
               required
+            /><br />
+            <TextField
+              id="standard-basic"
+              type="text"
+              autoComplete="off"
+              name="typeAccount"
+              value={this.state.typeAccount}
+              onChange={this.onChange}
+              placeholder="Tipo de Cuenta"
+              required
             /><br /><br />
             <Button
               variant="contained"
@@ -416,7 +449,8 @@ export default class Dashboard extends Component {
               Cancel
             </Button>
             <Button
-              disabled={this.state.name == '' || this.state.apellido == '' || this.state.correo == '' || this.state.cedula == '' || this.state.file == null}
+              disabled={this.state.name == '' || this.state.apellido == '' ||
+                this.state.correo == '' || this.state.cedula == '' || this.state.typeAccount || this.state.file == null}
               onClick={(e) => this.addProduct()} color="primary" autoFocus>
               Add Product
             </Button>

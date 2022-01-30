@@ -9,7 +9,6 @@ var multer = require('multer'),
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/local");
 var fs = require('fs');
-var employee = require("./model/employee.js");
 var user = require("./model/user.js");
 
 var dir = './uploads';
@@ -174,7 +173,9 @@ function checkUserAndGenerateToken(data, req, res) {
       res.json({
         message: 'Login Successfully.',
         token: token,
-        status: true
+        status: true,
+        id: data._id,
+        typeAccount: data.typeAccount
       });
     }
   });
@@ -186,7 +187,7 @@ app.post("/add-employee", upload.any(), (req, res) => {
     if (req.files && req.body && req.body.name && req.body.apellido && req.body.cedula &&
       req.body.correo) {
 
-      let new_product = new employee();
+      let new_product = new user();
       new_product.name = req.body.name;
       new_product.apellido = req.body.apellido;
       new_product.cedula = req.body.cedula;
@@ -235,7 +236,7 @@ app.post("/update-person", upload.any(), (req, res) => {
     if (req.files && req.body && req.body.name && req.body.apellido && req.body.cedula &&
       req.body.id && req.body.correo) {
       console.log('body;', req.body);
-      employee.findById(req.body.id, (err, new_item) => {
+      user.findById(req.body.id, (err, new_item) => {
         // primary fields
         // if file already exist than remove it
         if (req.files && req.files[0] && req.files[0].filename && new_item.image) {
@@ -322,7 +323,7 @@ app.post("/update-person", upload.any(), (req, res) => {
 app.post("/delete-product", (req, res) => {
   try {
     if (req.body && req.body.id) {
-      employee.findByIdAndUpdate(req.body.id, { is_delete: true }, { new: true }, (err, data) => {
+      user.findByIdAndUpdate(req.body.id, { is_delete: true }, { new: true }, (err, data) => {
         if (data.is_delete) {
           res.status(200).json({
             status: true,
@@ -351,6 +352,7 @@ app.post("/delete-product", (req, res) => {
 
 /*Api to get and search product with pagination and search by name*/
 app.get("/get-product", (req, res) => {
+  console.log('getproduct', req.user, 'query', req.query, 'body', req.body, 'search', req.query.search);
   try {
     var query = {};
     query["$and"] = [];
@@ -365,14 +367,16 @@ app.get("/get-product", (req, res) => {
     }
     var perPage = 5;
     var page = req.query.page || 1;
-    employee.find(query,
+    console.log('outside');
+    user.find(query,
       { name : 1, apellido : 1, cedula : 1, image : 1, correo : 1,
         user_id: 1, fechaNac : 1, vaccine_dosis: 1, vaccine_date : 1,
         vaccine_status: 1, vaccine_type : 1, _id : 1, date : 1, cel : 1, dir : 1}
       )
       .skip((perPage * page) - perPage).limit(perPage)
       .then((data) => {
-        employee.find(query).count()
+        console.log('inside', data, query);
+        user.find(query).count()
           .then((count) => {
 
             if (data && data.length > 0) {
@@ -411,41 +415,43 @@ app.get("/get-product", (req, res) => {
 /* Api to get the information of a specific employee */
 app.get("/get-employee", (req, res) => {
   try {
-    var query = {};
-    query["$and"] = [];
-    query["$and"].push({
-      is_delete: false,
-      user_id: req.user.user_id
-    });
-    if (req.query && req.query.user_id) {
-      query["$and"].push({
-        user_id : { $regex: req.query.user_id }
-      });
-    }
-    employee.find(query).count()
-      .then((count) => {
-        if (data && data.length > 0) {
-          res.status(200).json({
-            status: true,
-            title: 'Person retrived.',
-            person: data,
-            total: count,
-          });
-        } else {
+    console.log('in');
+    console.log(
+      req.query
+    );
+
+    if (req.query.id) {
+      console.log('query;', req.query);
+      user.findById(req.query.id, (err, item) => {
+      
+        if (err) {
           res.status(400).json({
-            errorMessage: 'There is no person!',
+            errorMessage: err,
             status: false
           });
+        } else {
+          console.log('DATA', item);
+          let objJsonStr = JSON.stringify(item);
+          let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
+          res.status(200).json({
+            status: true,
+            title: 'Person retrieved.',
+            updatePath: objJsonB64
+          });
         }
-      }).catch(err => {
-        res.status(400).json({
-          errorMessage: err.message || err,
-          status: false
-        });
       });
+    // error parameters
+    } else {
+      res.status(400).json({
+        errorMessage: 'Add proper parameter first!',
+        status: false
+      });
+    }
+  // error try-catch
   } catch (e) {
     res.status(400).json({
-      errorMessage: 'Something went wrong!',
+      errorMessage: `Something went wrong!`,
+      req: req.body,
       status: false
     });
   }

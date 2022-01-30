@@ -14,6 +14,23 @@ export default class Login extends React.Component {
     };
   }
 
+  componentDidMount = () => {
+    // check token
+    let token = localStorage.getItem('token');
+    if (token) {
+      // check type of user
+      let typeAccount = localStorage.getItem('typeAccount');
+      console.log(typeAccount);
+      if(typeAccount){
+        if(typeAccount==="admin"){
+          this.props.history.push('/dashboard');
+        } else {
+          this.props.history.push('/profile/user');
+        }
+      }
+    }
+  }
+
   onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
   login = () => {
@@ -24,9 +41,13 @@ export default class Login extends React.Component {
       username: this.state.username,
       password: pwd,
     }).then((res) => {
+      console.log('RESS', res);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user_id', res.data.id);
-      this.props.history.push('/dashboard');
+      localStorage.setItem('id', res.data.id);
+      localStorage.setItem('typeAccount', res.data.typeAccount);
+      if(res.data.typeAccount==="admin") this.props.history.push('/dashboard')
+      else this.props.history.push('/profile/user');
     }).catch((err) => {
       if (err.response && err.response.data && err.response.data.errorMessage) {
         swal({
@@ -71,16 +92,16 @@ export default class Login extends React.Component {
           <Button
             className="button_style"
             variant="contained"
-            color="brand.blue"
+            color="primary"
             size="small"
             disabled={this.state.username == '' && this.state.password == ''}
             onClick={this.login}
           >
             Login
           </Button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <Link href="/register" style={{ color: '#2B6CB0' }}>
+          {/* <Link href="/register" style={{ color: '#2B6CB0' }}>
             Register
-          </Link>
+          </Link> */}
         </div>
       </div>
     );

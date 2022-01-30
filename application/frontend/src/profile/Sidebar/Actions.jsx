@@ -15,6 +15,7 @@ export default function Actions() {
   const value = 'https://apple.com/cook'
   const { hasCopied, onCopy } = useClipboard(value)
   let history = useHistory();
+  let typeAccount = localStorage.getItem('typeAccount');
 
   const profileUrl = useRef(null)
 
@@ -24,6 +25,22 @@ export default function Actions() {
       profileUrl.current.select()
     }
   })
+
+  const logOut = () => {    
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('type_account');
+    localStorage.removeItem('id');
+    history.push('/');
+  }
+  
+  const handle = (type) => {
+    if (type === 'admin') {
+      history.push("/dashboard");
+    } else {
+      logOut();
+    }
+  }
 
   return (
     <VStack py={8} px={5} spacing={3}>
@@ -49,9 +66,11 @@ export default function Actions() {
           </Button>
         </InputRightAddon>
       </InputGroup> */}
-      <Box mt={5} py={5} px={8} borderTopWidth={1} borderColor="brand.light">
-        <Button backgroundColor="brand.cadet" onClick={() => history.push("/dashboard")}> {'<'}Return</Button>
-      </Box>
+        <Box mt={5} py={5} px={8} borderTopWidth={1} borderColor="brand.light">
+          <Button backgroundColor="brand.cadet" onClick={() => handle(typeAccount)}>
+            {typeAccount === 'admin' ?  '<Return' : 'LogOut' }
+          </Button>
+        </Box>
     </VStack>
   )
 }
