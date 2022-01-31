@@ -354,6 +354,7 @@ app.post("/delete-product", (req, res) => {
 /*Api to get and search product with pagination and search by name*/
 app.get("/get-product", (req, res) => {
   console.log('getproduct', req.user, 'query', req.query, 'body', req.body, 'search', req.query.search);
+  
   try {
     var query = {};
     query["$and"] = [];
@@ -361,12 +362,39 @@ app.get("/get-product", (req, res) => {
       is_delete: false,
       user_id: req.user.id
     });
+    // search name
     if (req.query && req.query.search) {
       query["$and"].push({
         name: { $regex: req.query.search }
       });
     }
-    var perPage = 5;
+    // search status
+    if (req.query && req.query.searchStatus) {
+      query["$and"].push({
+        vaccine_status: { $regex: req.query.searchStatus }
+      });
+    }
+    // search type
+    if (req.query && req.query.searchType) {
+      query["$and"].push({
+        vaccine_type: { $regex: req.query.searchType }
+      });
+    }
+    // vaccine date ranges
+    console.log('check', req.query && req.query.initDate && req.query.endDate)
+    console.log('check', req.query && req.query.initDate)
+    if (req.query && req.query.initDate && req.query.endDate) {
+      console.log('CHECKING')
+      console.log('dates', req.query.initDate, req.query.endDate)
+      console.log(new Date(req.query.initDate), new Date(req.query.initDate).toISOString(), new Date( new Date(req.query.initDate).toISOString() ) )
+      query["$and"].push({
+        vaccine_date: {
+          $gte: new Date(req.query.initDate),
+          $lt:  new Date(req.query.endDate)
+        }
+      });
+    }
+    var perPage = 4;
     var page = req.query.page || 1;
     console.log('outside');
     user.find(query,
@@ -391,7 +419,7 @@ app.get("/get-product", (req, res) => {
               });
             } else {
               res.status(400).json({
-                errorMessage: 'There is no product!',
+                errorMessage: 'There is no employee!',
                 status: false
               });
             }

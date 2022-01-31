@@ -2,10 +2,20 @@ import React, { Component } from 'react';
 import {
   Button, TextField, Dialog, DialogActions, LinearProgress,
   DialogTitle, DialogContent, TableBody, Table,
-  TableContainer, TableHead, TableRow, TableCell
+  TableContainer, TableHead, TableRow, TableCell, Grid
 } from '@material-ui/core';
+import {
+  FormControl,
+  FormLabel,
+} from '@chakra-ui/react'
+import {RangeDatepicker} from 'chakra-dayzed-datepicker'
+import Select1 from 'react-select'
 import { Pagination } from '@material-ui/lab';
 import swal from 'sweetalert';
+import {formatDate} from './utils/dates'
+import {formatStatus} from './utils/conversions'
+import { ACTIVE_VACCINE, COMPLETE_VACCINE, NO_VACCINE } from './constants/text';
+import { MenuItem } from 'material-ui';
 const axios = require('axios');
 
 export default class Dashboard extends Component {
@@ -24,8 +34,13 @@ export default class Dashboard extends Component {
       file: '',
       fileName: '',
       page: 1,
-      search: '',
       products: [],
+      dateRange: [ new Date().setDate(new Date().getDate()-1000), new Date() ],
+      search: '',
+      searchStatus: '',
+      searchType: '',
+      searchInitDate: '',
+      searchEndDate: '',
       pages: 0,
       loading: false
     };
@@ -37,7 +52,7 @@ export default class Dashboard extends Component {
       this.props.history.push('/login');
     } else {
       this.setState({ token: token }, () => {
-        this.getProduct();
+        this.getProduct('name');
         let typeAccount = localStorage.getItem('typeAccount');
         if(typeAccount !== 'admin'){
           this.props.history.push('/profile/user');
@@ -46,15 +61,37 @@ export default class Dashboard extends Component {
     }
   }
 
-  getProduct = () => {
-    
+  getProduct = (options) => {    
     this.setState({ loading: true });
-
+    // search
     let data = '?';
+    // page
     data = `${data}page=${this.state.page}`;
-    if (this.state.search) {
+    console.log(
+      'Searches',
+      this.state.search,
+      this.state.searchStatus,
+      this.state.searchType,
+      this.state.searchInitDate,
+      this.state.searchEndDate,
+    )
+    // search name
+    if ( this.state.search ) {
       data = `${data}&search=${this.state.search}`;
     }
+    // search status
+    if ( this.state.searchStatus ) {
+      data = `${data}&searchStatus=${this.state.searchStatus}`;
+    }
+    // search type
+    if ( this.state.searchType ) {
+      data = `${data}&searchType=${this.state.searchType}`;
+    }
+    // date ranges
+    if (this.state.searchInitDate && this.state.searchEndDate){
+      data = `${data}&initDate=${this.state.searchInitDate}&endDate=${this.state.searchEndDate}`;
+    }
+    // call API
     axios.get(`http://localhost:2000/get-product${data}`, {
       headers: {
         'token': this.state.token
@@ -100,9 +137,52 @@ export default class Dashboard extends Component {
     });
   }
 
+  searchDate = () => {
+    // search
+    this.setState(
+      { page: 1, searchInitDate: formatDate(this.state.dateRange[0]), searchEndDate: formatDate(this.state.dateRange[1]) }
+      , () => { this.getProduct('name');
+        console.log('in_vaccine_dates') }
+    );
+  }
+
+  handleVaccine = (response, name) => {
+    console.log('NAME', name, response);
+    if (name === 'vaccine_dates'){    
+      const date = new Date(response[0])
+      // date range states
+      if ( date > this.state.dateRange[1] ){ // greater than end date
+        this.setState((prevState, props) => ({ dateRange: [new Date(prevState.dateRange[1]), date] }),
+          () => { console.log('daterange1', this.state.dateRange); this.searchDate()}
+        );
+      }
+      else if ( date <= this.state.dateRange[1] ) { // greater than end date
+        this.setState((prevState, props) => ({ dateRange: [date, new Date(prevState.dateRange[1])] }),
+          () => { console.log('daterange2', this.state.dateRange); this.searchDate()}
+        );
+      }
+      console.log('daterange3', this.state.dateRange);
+      
+    // vaccine status
+    } else if (name === 'vaccine_status') {
+      // search
+      this.setState(
+        { page: 1, searchStatus: response.value }
+        , () => { this.getProduct(name) }
+      );
+    // vaccine type
+    } else if (name === 'vaccine_type') {
+      // search
+      this.setState(
+        { page: 1, searchType: response.value }
+        , () => { this.getProduct(name) }
+      );
+    }
+  }
+
   pageChange = (e, page) => {
     this.setState({ page: page }, () => {
-      this.getProduct();
+      this.getProduct('name');
     });
   }
 
@@ -119,11 +199,26 @@ export default class Dashboard extends Component {
       this.setState({ fileName: e.target.files[0].name }, () => { });
     }
     this.setState({ [e.target.name]: e.target.value }, () => { });
+    console.log(e.target.name);
     if (e.target.name == 'search') {
       this.setState({ page: 1 }, () => {
-        this.getProduct();
+        this.getProduct('name');
       });
     }
+  };
+
+  handleResetDate = (e) => {    
+    const initDt = new Date().setDate(new Date().getDate()-1000);
+    const endDt = new Date();
+    const searchInitDt = formatDate( (new Date().setDate(new Date().getDate()-1000)) );
+    const searchEndDt = formatDate( new Date() );
+    this.setState(
+      { dateRange: [initDt, endDt],
+        searchInitDate: searchInitDt, searchEndDate: searchEndDt
+      },
+    () => {
+      this.getProduct('name');
+    });
   };
 
   addProduct = () => {
@@ -152,7 +247,7 @@ export default class Dashboard extends Component {
 
       this.handleProductClose();
       this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null, page: 1 }, () => {
-        this.getProduct();
+        this.getProduct('name');
       });
     }).catch((err) => {
       swal({
@@ -191,7 +286,7 @@ export default class Dashboard extends Component {
 
       this.handleProductEditClose();
       this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null }, () => {
-        this.getProduct();
+        this.getProduct('name');
       });
     }).catch((err) => {
       swal({
@@ -253,7 +348,7 @@ export default class Dashboard extends Component {
         {this.state.loading && <LinearProgress size={40} />}
         <div>
           <br />
-          <h1>Kruger Corp</h1>
+          <p style={{ fontSize: '35px'}}>  Kruger Corp</p>
           <br />
           <Button
             className="button_style"
@@ -281,7 +376,7 @@ export default class Dashboard extends Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Edit Product</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Edit Employee</DialogTitle>
           <DialogContent>
             <TextField
               id="standard-basic"
@@ -361,7 +456,7 @@ export default class Dashboard extends Component {
                 this.state.correo == '' || this.state.cedula == '' ||
                 this.state.typeAccount == ''}
               onClick={(e) => this.updateProduct()} color="primary" autoFocus>
-              Edit Product
+              Edit Employee
             </Button>
           </DialogActions>
         </Dialog>
@@ -464,7 +559,7 @@ export default class Dashboard extends Component {
 
         <br />
 
-        <TableContainer>
+        <TableContainer  style={{padding: '20px'}}>
           <TextField
             id="standard-basic"
             type="search"
@@ -475,14 +570,63 @@ export default class Dashboard extends Component {
             placeholder="Buscar por el nombre"
             required
           />
-          <Table aria-label="simple table">
+          <Table aria-label="simple table" >
             <TableHead>
               <TableRow>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Image</TableCell>
-                <TableCell align="center">Apellido</TableCell>
-                <TableCell align="center">Cédula</TableCell>
-                <TableCell align="center">Correo</TableCell>
+                <TableCell align="left">Nombre</TableCell>
+                <TableCell align="center">Foto</TableCell>
+                <TableCell align="center">
+                  <p>Estado</p>
+                  <Select1
+                    onChange={e => this.handleVaccine(e, 'vaccine_status')}
+                    options={[
+                      { value: "0", label: 'No' },
+                      { value: "1", label: 'Activo' },
+                      { value: "2", label: 'Completo' },
+                      { value: "", label: 'Todos' }
+                    ]}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <p>Tipo</p>
+                  <Select1
+                    onChange={e => this.handleVaccine(e, 'vaccine_type')}
+                    options={[
+                      { value: "Pfizer", label: 'Pfizer' },
+                      { value: "AstraZeneca", label: 'AstraZeneca' },
+                      { value: "Johnson", label: 'Johnson' },
+                      { value: "CoronaVac", label: 'CoronaVac' },
+                      { value: "Sputnik", label: 'Sputnik' },
+                      { value: "", label: 'Todos' }
+                    ]}
+                  />
+                </TableCell>
+                <TableCell align="center">
+                  <p>Última Fecha</p>
+                  <Grid container justifyContent="center">
+                    <Grid key={'range_dates'} item>
+                      <FormControl id="vaccine_date_range">
+                        <RangeDatepicker
+                          name="vaccine_range"
+                          selectedDates={this.state.dateRange} // {formattedDate}
+                          onDateChange={ dts => {
+                            this.handleVaccine(dts, 'vaccine_dates');
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid key={'button_dates'} item>
+                      <button
+                          type="button"
+                          className="narrow_button_style"
+                          onClick={this.handleResetDate}
+                        >
+                      R
+                      </button>
+                    </Grid>
+                    
+                  </Grid>
+                </TableCell>
                 <TableCell align="center">Acción</TableCell>
               </TableRow>
             </TableHead>
@@ -490,13 +634,13 @@ export default class Dashboard extends Component {
               {console.log('productss', this.state.products)}
               {this.state.products.map((row) => (
                 <TableRow key={`${row.name}-${row.apellido}`}>
-                  <TableCell align="center" component="th" scope="row">
-                    {row.name}
+                  <TableCell align="left" component="th" scope="row">
+                      {`${row.name} ${row.apellido}`}
                   </TableCell>
                   <TableCell align="center"><img src={`http://localhost:2000/${row.image}`} width="70" height="70" /></TableCell>
-                  <TableCell align="center">{row.apellido}</TableCell>
-                  <TableCell align="center">{row.cedula}</TableCell>
-                  <TableCell align="center">{row.correo}</TableCell>
+                  <TableCell align="center">{formatStatus(row.vaccine_status)}</TableCell>
+                  <TableCell align="center">{row.vaccine_type}</TableCell>
+                  <TableCell align="center">{formatDate(row.vaccine_date)}</TableCell>
                   <TableCell align="center">
                     <Button
                       type = "button"

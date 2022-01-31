@@ -100,7 +100,7 @@ function PerfilPersonal(
         <FormLabel>Fecha de Nacimiento</FormLabel>
         <SingleDatepicker
           name="date-input-birth"
-          date={formattedDate}
+          date={new Date(formattedDate)}
           onDateChange={ dt => {
             set_person({...person, fechaNac: dt});
             setFormattedDate(dt);

@@ -41,11 +41,11 @@ function PerfilSalud({set_person, person, vaccine_status, vaccine_type, vaccine_
         >
           <Stack  direction="row" align="center" spacing={1}>
             <p>No</p>
-            <Radio value="1"></Radio>
+            <Radio value="0"></Radio>
             <p>Activo</p>
-            <Radio value="2"></Radio>
+            <Radio value="1"></Radio>
             <p>Completo</p>
-            <Radio value="3"></Radio>
+            <Radio value="2"></Radio>
           </Stack>
         </RadioGroup>
       </FormControl>

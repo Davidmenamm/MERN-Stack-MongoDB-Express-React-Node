@@ -63,7 +63,8 @@ export default class Login extends React.Component {
     return (
       <div style={{ marginTop: '200px'}}>
         <div>
-          <h2 style={{ color: '#2B6CB0' }} >Login</h2>
+          <p style={{ fontSize: '28px', color: '#2B6CB0'}}>Login</p>
+          <br/><br/>
         </div>
 
         <div>
@@ -92,8 +93,8 @@ export default class Login extends React.Component {
           <Button
             className="button_style"
             variant="contained"
-            color="primary"
-            size="small"
+            color="#2B6CB0"
+            size="medium"
             disabled={this.state.username == '' && this.state.password == ''}
             onClick={this.login}
           >
