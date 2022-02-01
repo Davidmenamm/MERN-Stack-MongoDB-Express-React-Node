@@ -13,7 +13,20 @@ import './index.css';
 import { theme } from './constants/theme'
 import { ChakraProvider } from '@chakra-ui/react'
 
+// clear storage when browser closes
+function clearStorage() {
+    let session = sessionStorage.getItem('register');
+    if (session == null) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('type_account');
+        localStorage.removeItem('id');
+    }
+    sessionStorage.setItem('register', 1);
+}
+window.addEventListener('load', clearStorage);
 
+// main render
 ReactDOM.render(
     <ChakraProvider theme={theme}>
         <Provider store={store}>

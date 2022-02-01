@@ -12,6 +12,7 @@ import {
   NumberInputStepper,
 } from '@chakra-ui/react'
 import {SingleDatepicker} from 'chakra-dayzed-datepicker'
+import { formatDate } from '../../utils/dates'
 
 function PerfilPersonal(
   { set_person, person, nombre, apellido, cedula, correo, fechaNac, dir, cel } ) {
@@ -100,7 +101,7 @@ function PerfilPersonal(
         <FormLabel>Fecha de Nacimiento</FormLabel>
         <SingleDatepicker
           name="date-input-birth"
-          date={new Date(formattedDate)}
+          date={new Date(formatDate(fechaNac))}
           onDateChange={ dt => {
             set_person({...person, fechaNac: dt});
             setFormattedDate(dt);

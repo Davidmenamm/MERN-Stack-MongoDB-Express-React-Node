@@ -195,6 +195,7 @@ export default class Dashboard extends Component {
   }
 
   onChange = (e) => {
+    console.log('eee',e.target.value, e.target.name);
     if (e.target.files && e.target.files[0] && e.target.files[0].name) {
       this.setState({ fileName: e.target.files[0].name }, () => { });
     }
@@ -239,13 +240,16 @@ export default class Dashboard extends Component {
       }
     }).then((res) => {
 
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
-
+      if(res.data.status) {
+        swal({
+          text: res.data.title,
+          icon: "success",
+          type: "success"
+        });
+      }
+      // close modal
       this.handleProductClose();
+      // reset
       this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null, page: 1 }, () => {
         this.getProduct('name');
       });
@@ -255,12 +259,18 @@ export default class Dashboard extends Component {
         icon: "error",
         type: "error"
       });
+      // close modal
       this.handleProductClose();
+      // reset
+      this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null, page: 1 }, () => {
+        this.getProduct('name');
+      });
     });
 
   }
 
   updateProduct = () => {
+    console.log('producto', this.state)
     const fileInput = document.querySelector("#fileInput");
     const file = new FormData();
     file.append('id', this.state.id);
@@ -269,7 +279,7 @@ export default class Dashboard extends Component {
     file.append('apellido', this.state.apellido);
     file.append('correo', this.state.correo);
     file.append('cedula', this.state.cedula);
-    file.append('typeAcccount', this.state.typeAccount);
+    file.append('typeAccount', this.state.typeAccount);
 
     axios.post('http://localhost:2000/update-person', file, {
       headers: {
@@ -295,6 +305,9 @@ export default class Dashboard extends Component {
         type: "error"
       });
       this.handleProductEditClose();
+      this.setState({ typeAccount: '', name: '', apellido: '', correo: '', cedula: '', file: null }, () => {
+        this.getProduct('name');
+      });
     });
 
   }
@@ -348,7 +361,7 @@ export default class Dashboard extends Component {
         {this.state.loading && <LinearProgress size={40} />}
         <div>
           <br />
-          <p style={{ fontSize: '35px'}}>  Kruger Corp</p>
+          <p style={{ fontSize: '35px'}}>Kruger Corp</p>
           <br />
           <Button
             className="button_style"
@@ -378,6 +391,18 @@ export default class Dashboard extends Component {
         >
           <DialogTitle id="alert-dialog-title">Edit Employee</DialogTitle>
           <DialogContent>
+            <div style={{ paddingLeft: '35px', paddingRight: '35px', paddingBottom: '10px' }}>
+              <select
+                name="typeAccount"
+                id="standard-basic"
+                value={this.state.typeAccount}
+                onChange={this.onChange}
+                required
+              >
+                <option value="admin">Administrador</option>
+                <option value="employee">Empleado</option>
+              </select>
+            </div>
             <TextField
               id="standard-basic"
               type="text"
@@ -416,16 +441,6 @@ export default class Dashboard extends Component {
               value={this.state.correo}
               onChange={this.onChange}
               placeholder="Correo Electrónico"
-              required
-            /><br />
-            <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="typeAccount"
-              value={this.state.typeAccount}
-              onChange={this.onChange}
-              placeholder="Tipo de Cuenta"
               required
             /><br /><br />
             <Button
@@ -470,6 +485,20 @@ export default class Dashboard extends Component {
         >
           <DialogTitle id="alert-dialog-title">Add Employee</DialogTitle>
           <DialogContent>
+          {console.log('this.state.typeAccount', this.state.typeAccount)}
+          <div style={{ paddingLeft: '35px', paddingRight: '35px', paddingBottom: '10px' }}>
+              <select
+                name="typeAccount"
+                id="standard-basic"
+                // value={this.state.typeAccount}
+                onChange={this.onChange}
+                required
+              >
+                <option value="" disabled selected hidden>Select...</option>
+                <option value="employee">Empleado</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
             <TextField
               id="standard-basic"
               type="text"
@@ -509,16 +538,6 @@ export default class Dashboard extends Component {
               onChange={this.onChange}
               placeholder="Correo Electrónico"
               required
-            /><br />
-            <TextField
-              id="standard-basic"
-              type="text"
-              autoComplete="off"
-              name="typeAccount"
-              value={this.state.typeAccount}
-              onChange={this.onChange}
-              placeholder="Tipo de Cuenta"
-              required
             /><br /><br />
             <Button
               variant="contained"
@@ -552,6 +571,9 @@ export default class Dashboard extends Component {
                 this.state.correo == '' || this.state.cedula == '' ||
                 this.state.typeAccount == '' || this.state.file == null}
               onClick={(e) => this.addProduct()} color="primary" autoFocus>
+              {console.log( this.state.name == '', this.state.apellido == '',
+                this.state.correo == '', this.state.cedula == '',
+                this.state.typeAccount == '', this.state.file == null ) }
               Add Employee
             </Button>
           </DialogActions>

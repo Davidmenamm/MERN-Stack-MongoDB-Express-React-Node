@@ -12,18 +12,13 @@ import {
   NumberInputField,
   NumberInputStepper,
   Stack,
+  Select
 } from '@chakra-ui/react'
 import {SingleDatepicker} from 'chakra-dayzed-datepicker'
 import { Radio, RadioGroup } from '@material-ui/core'
+import { formatDate } from '../../utils/dates';
 
 function PerfilSalud({set_person, person, vaccine_status, vaccine_type, vaccine_date, vaccine_dosis}) {
-  // format input date
-  const [formattedDate, setFormattedDate] = useState(new Date());
-  const formatInputDate = () => {
-    let initial_format = new Date(vaccine_date);
-    let formatted_date_str = initial_format.getFullYear() + "-" + (initial_format.getMonth() + 1) + "-" + initial_format.getDate();
-    setFormattedDate (new Date(formatted_date_str));
-  }
   // return
   return (
     <Grid
@@ -51,34 +46,47 @@ function PerfilSalud({set_person, person, vaccine_status, vaccine_type, vaccine_
       </FormControl>
       <FormControl id="vaccine_type">
         <FormLabel>Tipo de Vacuna</FormLabel>
-        <Input
-          value={vaccine_type}          
-          onChange={ e => set_person({...person, vaccine_type: e.target.value}) }
+        <Select
           focusBorderColor="brand.blue"
-          type="text"
-          placeholder="Pfizer" />
+          placeholder="Seleccione..."
+          value={vaccine_type}
+          onChange={ e => {
+            set_person({...person, vaccine_type: e.target.value}) }
+          }
+        >
+          <option value="Pfizer">Pfizer</option>
+          <option value="AstraZeneca">AstraZeneca</option>
+          <option value="Johnson">Johnson</option>
+          <option value="CoronaVac">CoronaVac</option>
+          <option value="Sputnik">Sputnik</option>
+        </Select>
       </FormControl>
       <FormControl id="vaccine_dosis">
         <FormLabel>Número de Dosis</FormLabel>
-        <NumberInput
-          value={vaccine_dosis}          
-          onChange={ e => {
-            set_person({...person, vaccine_dosis: e}) }
-          }
+        <Select
           focusBorderColor="brand.blue"
-          placeholder={"1717842152"}
+          placeholder="Seleccione..."
+          value={vaccine_dosis}
+          onChange={ e => {
+            set_person({...person, vaccine_dosis: e.target.value}) }
+          }
         >
-          <NumberInputField />
-        </NumberInput>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </Select>
       </FormControl>
       <FormControl id="vaccine_date">
         <FormLabel>Fecha de Vacunación</FormLabel>
         <SingleDatepicker
           name="date-input-vaccine"
-          date={formattedDate}
+          date={new Date(formatDate(vaccine_date))}
           onDateChange={ dt => {
+            console.log('new Date(formatDate(vaccine_date))')
+            console.log(new Date(formatDate(vaccine_date)))
+            console.log(new Date())
             set_person({...person, vaccine_date: dt});
-            setFormattedDate(dt);
           }
           }
         />

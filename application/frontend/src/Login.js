@@ -49,6 +49,7 @@ export default class Login extends React.Component {
       if(res.data.typeAccount==="admin") this.props.history.push('/dashboard')
       else this.props.history.push('/profile/user');
     }).catch((err) => {
+      console.log('errrr', err)
       if (err.response && err.response.data && err.response.data.errorMessage) {
         swal({
           text: err.response.data.errorMessage,

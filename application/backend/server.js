@@ -10,6 +10,7 @@ var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/local");
 var fs = require('fs');
 var user = require("./model/user.js");
+var validate = require("validate.js");
 
 var dir = './uploads';
 var upload = multer({
@@ -186,29 +187,69 @@ app.post("/add-employee", upload.any(), (req, res) => {
   try {    
     if (req.files && req.body && req.body.name && req.body.apellido && req.body.cedula &&
       req.body.correo) {
-
-      let new_product = new user();
-      new_product.name = req.body.name;
-      new_product.apellido = req.body.apellido;
-      new_product.cedula = req.body.cedula;
-      new_product.image = req.files[0].filename;
-      new_product.correo = req.body.correo;
-      new_product.user_id = req.user.id;
-      new_product.typeAccount = req.body.typeAccount;
-      new_product.save((err, data) => {
-        if (err) {
-          res.status(400).json({
-            errorMessage: err,
-            status: false
-          });
-        } else {
-          res.status(200).json({
-            status: true,
-            title: 'Product Added successfully.'
-          });
-        }
-      });
-
+      // validate constraints
+      let constraints = {
+        file: {},
+        name: {},
+        apellido: {},
+        cedula: { length: {is: 10} },
+        email: { email: true },
+        id: {},
+        type_account: {},
+      };
+      // validate
+      let validation = validate({
+        // file:           req.files[0].filename,
+        name:           req.body.name,
+        apellido:       req.body.apellido,
+        cedula:         req.body.cedula,
+        email:          req.body.correo,
+        id:             req.body.fechaNac,
+        type_account:   req.body.dir,
+      }
+      , constraints);
+      // validation
+      if (validation===undefined){ // when everything is fine nothing is returned
+        // not repeat user
+        user.find({ cedula: req.body.cedula }, (err, old_usr) => {
+          console.log('old_usr', old_usr);
+          if( old_usr && !(old_usr[0]) ){
+            // new user
+            let new_product = new user();
+            new_product.image = req.files[0].filename;
+            new_product.name = req.body.name;
+            new_product.apellido = req.body.apellido;
+            new_product.cedula = req.body.cedula;
+            new_product.correo = req.body.correo;
+            new_product.user_id = req.user.id;
+            new_product.typeAccount = req.body.typeAccount;
+            new_product.save((err, data) => {
+              if (err) {
+                res.status(400).json({
+                  errorMessage: err,
+                  status: false
+                });
+              } else {
+                res.status(200).json({
+                  status: true,
+                  title: 'Product Added successfully.'
+                });
+              }
+            });
+          } else {
+            console.log('error exists');
+            res.status(400).json({
+              errorMessage: 'User Already Exists!',
+              status: false
+            });
+          }
+        })
+      } else {
+        res.status(400).json({
+          errorMessage: JSON.stringify(validation),
+          status: false
+        });
+      }
     } else {
       res.status(400).json({
         errorMessage: 'Add proper parameter first!',
@@ -238,70 +279,114 @@ app.post("/update-person", upload.any(), (req, res) => {
       req.body.id && req.body.correo) {
       console.log('body;', req.body);
       user.findById(req.body.id, (err, new_item) => {
-        // primary fields
-        // if file already exist than remove it
-        if (req.files && req.files[0] && req.files[0].filename && new_item.image) {
-          var path = `./uploads/${new_item.image}`;
-          fs.unlinkSync(path);
+        // validate constraints
+        let constraints = {
+          file: {},
+          name: {},
+          apellido: {},
+          cedula: { length: {is: 10} },
+          email: { email: true },
+          fechaNac: {},
+          dir: {},
+          cel: { length: {is: 10-1} },
+          vaccine_status: {},
+          vaccine_type: {},
+          vaccine_date: {},
+          vaccine_dosis: {}
+        };
+        // validate
+        let validation = validate({
+          // file:           req.files[0].filename,
+          name:           req.body.name,
+          apellido:       req.body.apellido,
+          cedula:         req.body.cedula,
+          email:         req.body.correo,
+          fechaNac:       req.body.fechaNac,
+          dir:            req.body.dir,
+          cel:            req.body.cel,
+          vaccine_status: req.body.vaccine_status,
+          vaccine_type:   req.body.vaccine_type,
+          vaccine_date:   req.body.vaccine_date,
+          vaccine_dosis:  req.body.vaccine_dosis
         }
-
-        if (req.files && req.files[0] && req.files[0].filename) {
-          new_item.image = req.files[0].filename;
-        }
-        if (req.body.name) {
-          new_item.name = req.body.name;
-        }
-        if (req.body.apellido) {
-          new_item.apellido = req.body.apellido;
-        }
-        if (req.body.cedula) {
-          new_item.cedula = req.body.cedula;
-        }
-        if (req.body.correo) {
-          new_item.correo = req.body.correo;
-        }
-        // secondary fields
-        if (req.body.fechaNac) {
-          new_item.fechaNac = req.body.fechaNac;
-        }
-        if (req.body.dir) {
-          new_item.dir = req.body.dir;
-        }
-        if (req.body.cel) {
-          new_item.cel = req.body.cel;
-        }
-        // vaccination fields
-        if (req.body.vaccine_status) {
-          new_item.vaccine_status = req.body.vaccine_status;
-        }
-        if (req.body.vaccine_type) {
-          new_item.vaccine_type = req.body.vaccine_type;
-        }
-        if (req.body.vaccine_date) {
-          new_item.vaccine_date = req.body.vaccine_date;
-        }
-        if (req.body.vaccine_dosis) {
-          new_item.vaccine_dosis = req.body.vaccine_dosis;
-        }
-        // save item
-        new_item.save((err, data) => {
-          if (err) {
-            res.status(400).json({
-              errorMessage: err,
-              status: false
-            });
-          } else {
-            console.log('DATA', new_item);
-            let objJsonStr = JSON.stringify(new_item);
-            let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
-            res.status(200).json({
-              status: true,
-              title: 'Person updated.',
-              updatePath: objJsonB64
-            });
+        , constraints);
+        console.log('VALIDATION', validation);
+        // validation
+        if (validation===undefined){ // when everything is fine nothing is returned
+          // primary fields
+          // if file already exist than remove it
+          if (req.files && req.files[0] && req.files[0].filename && new_item.image) {
+            var path = `./uploads/${new_item.image}`;
+            fs.unlinkSync(path);
           }
-        });
 
+          if (req.files && req.files[0] && req.files[0].filename) {
+            new_item.image = req.files[0].filename;
+          }
+          if (req.body.name) {
+            new_item.name = req.body.name;
+          }
+          if (req.body.apellido) {
+            new_item.apellido = req.body.apellido;
+          }
+          if (req.body.cedula) {
+            new_item.cedula = req.body.cedula;
+          }
+          if (req.body.correo) {
+            console.log( 'validate', typeof(req.body.correo) );
+            new_item.correo = req.body.correo;
+          }
+          // secondary fields
+          if (req.body.fechaNac) {
+            new_item.fechaNac = req.body.fechaNac;
+          }
+          if (req.body.dir) {
+            new_item.dir = req.body.dir;
+          }
+          if (req.body.cel) {
+            new_item.cel = req.body.cel;
+          }
+          // vaccination fields
+          if (req.body.vaccine_status) {
+            new_item.vaccine_status = req.body.vaccine_status;
+          }
+          if (req.body.vaccine_type) {
+            new_item.vaccine_type = req.body.vaccine_type;
+          }
+          if (req.body.vaccine_date) {
+            new_item.vaccine_date = req.body.vaccine_date;
+          }
+          if (req.body.vaccine_dosis) {
+            new_item.vaccine_dosis = req.body.vaccine_dosis;
+          }
+          // type account
+          if (req.body.typeAccount) {
+            new_item.typeAccount = req.body.typeAccount;
+          }
+          // save item
+          new_item.save((err, data) => {
+            if (err) {
+              res.status(400).json({
+                errorMessage: err,
+                status: false
+              });
+            } else {
+              console.log('DATA', new_item);
+              let objJsonStr = JSON.stringify(new_item);
+              let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
+              res.status(200).json({
+                status: true,
+                title: 'Person updated.',
+                updatePath: objJsonB64
+              });
+            }
+          });
+        } else {
+          res.status(400).json({
+            errorMessage: JSON.stringify(validation),
+            status: false
+          });
+        }
       });
     // error parameters
     } else {
@@ -400,7 +485,8 @@ app.get("/get-product", (req, res) => {
     user.find(query,
       { name : 1, apellido : 1, cedula : 1, image : 1, correo : 1,
         user_id: 1, fechaNac : 1, vaccine_dosis: 1, vaccine_date : 1,
-        vaccine_status: 1, vaccine_type : 1, _id : 1, date : 1, cel : 1, dir : 1}
+        vaccine_status: 1, vaccine_type : 1, _id : 1, date : 1, cel : 1,
+        dir : 1, typeAccount: 1}
       )
       .skip((perPage * page) - perPage).limit(perPage)
       .then((data) => {
