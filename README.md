@@ -3,6 +3,7 @@ MERN Stack (MongoDB, Express, React, Node) for Vaccine Registration at Kruger Co
 
 # Based on two template projects
 Login and Dashboard: https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack
+
 Profile: https://github.com/neysidev/user-profile
 
 # Project
@@ -22,5 +23,6 @@ Admin users can only access the employee that they have created.
 
 # Admin workflow
 The workflow of an admin user is shown.
-[![flow](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/admin_workflow_3.gif)](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/admin_workflow_3.gif)
+
+[![flow](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/admin_workflow_19.gif)](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/admin_workflow_19.gif)
 
