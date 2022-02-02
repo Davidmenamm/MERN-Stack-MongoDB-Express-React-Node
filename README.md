@@ -1,7 +1,7 @@
 # MERN-Stack-MongoDB-Express-React-Node
 MERN Stack (MongoDB, Express, React, Node) for Vaccine Registration at Kruger Coorporation.
 
-This was a program I realized as part of the application process for the company.
+This is a program I realized as part of the application process for the company.
 
 
 # Based on two template projects
