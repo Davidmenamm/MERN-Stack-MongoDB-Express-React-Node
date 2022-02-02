@@ -38,6 +38,7 @@ DataBase (MongoDB)
 The project can be easily installed and runned.
 
 To install:
+
 Frontend
 - On the frontend directory, in the terminal set yarn install or npm install.
 
