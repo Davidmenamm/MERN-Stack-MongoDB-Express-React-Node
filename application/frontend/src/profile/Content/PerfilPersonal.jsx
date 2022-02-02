@@ -71,8 +71,8 @@ function PerfilPersonal(
             set_person({...person, cel: e}) }
           }
           focusBorderColor="brand.blue"
-          defaultValue={"0954152889"}
-          placeholder={"0914292991"}
+          min={1}
+          defaultValue={1}
         >
           <NumberInputField />
         </NumberInput>

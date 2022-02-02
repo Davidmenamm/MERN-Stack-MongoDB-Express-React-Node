@@ -223,6 +223,10 @@ app.post("/add-employee", upload.any(), (req, res) => {
             new_product.correo = req.body.correo;
             new_product.user_id = req.user.id;
             new_product.typeAccount = req.body.typeAccount;
+            new_product.vaccine_status = "0";
+            new_product.vaccine_type = "Ninguna";
+            new_product.vaccine_date = new Date();
+            new_product.vaccine_dosis = 0;
             new_product.save((err, data) => {
               if (err) {
                 res.status(400).json({
@@ -282,17 +286,23 @@ app.post("/update-person", upload.any(), (req, res) => {
         // validate constraints
         let constraints = {
           file: {},
-          name: {},
-          apellido: {},
-          cedula: { length: {is: 10} },
-          email: { email: true },
-          fechaNac: {},
-          dir: {},
-          cel: { length: {is: 10-1} },
-          vaccine_status: {},
-          vaccine_type: {},
-          vaccine_date: {},
-          vaccine_dosis: {}
+          name: { presence: true },
+          apellido: { presence: true },
+          cedula: { presence: true, length: {is: 10} },
+          email: { presence: true, email: true },
+          fechaNac: { presence: true },
+          dir: { presence: true },
+          cel: { presence: true, length: {is: 10-1} },
+          vaccine_status: { presence: true },
+          vaccine_type: { presence: true },
+          vaccine_date: { presence: true },
+          vaccine_dosis: {
+            presence: true,
+            numericality: {
+              onlyInteger: true,
+              greaterThanOrEqualTo: 0
+            }
+          }
         };
         // validate
         let validation = validate({
@@ -300,14 +310,14 @@ app.post("/update-person", upload.any(), (req, res) => {
           name:           req.body.name,
           apellido:       req.body.apellido,
           cedula:         req.body.cedula,
-          email:         req.body.correo,
+          email:          req.body.correo,
           fechaNac:       req.body.fechaNac,
-          dir:            req.body.dir,
-          cel:            req.body.cel,
+          dir:            req.body.dir !== 'undefined' ? req.body.dir : " ",
+          cel:            req.body.cel !== 'undefined' ? req.body.cel : -1,
           vaccine_status: req.body.vaccine_status,
           vaccine_type:   req.body.vaccine_type,
           vaccine_date:   req.body.vaccine_date,
-          vaccine_dosis:  req.body.vaccine_dosis
+          vaccine_dosis:  req.body.vaccine_dosis !== 'undefined' ? parseInt(req.body.vaccine_dosis) : -1
         }
         , constraints);
         console.log('VALIDATION', validation);

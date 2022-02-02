@@ -581,7 +581,7 @@ export default class Dashboard extends Component {
 
         <br />
 
-        <TableContainer  style={{padding: '20px'}}>
+        <TableContainer>
           <TextField
             id="standard-basic"
             type="search"
@@ -619,6 +619,7 @@ export default class Dashboard extends Component {
                       { value: "Johnson", label: 'Johnson' },
                       { value: "CoronaVac", label: 'CoronaVac' },
                       { value: "Sputnik", label: 'Sputnik' },
+                      { value: "Ninguna", label: 'Ninguna' },
                       { value: "", label: 'Todos' }
                     ]}
                   />

@@ -59,6 +59,7 @@ function PerfilSalud({set_person, person, vaccine_status, vaccine_type, vaccine_
           <option value="Johnson">Johnson</option>
           <option value="CoronaVac">CoronaVac</option>
           <option value="Sputnik">Sputnik</option>
+          <option value="Ninguna">Ninguna</option>
         </Select>
       </FormControl>
       <FormControl id="vaccine_dosis">
