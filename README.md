@@ -25,7 +25,9 @@ Admin users can only access the employee that they have created.
 
 # Structure
 Frontend (React)
+
 Backend (NodeJS with Express)
+
 DataBase (MongoDB)
 - Currently it is running locally, it must be configured to run on a host.
 - The initial users are loaded as a json file to load in the mongodb database, this is important for the project to work.
@@ -38,8 +40,10 @@ The project can be easily installed and runned.
 To install:
 Frontend
 - On the frontend directory, in the terminal set yarn install or npm install.
+
 Backend
 - On the backend directory, in the terminal set yarn install or npm install.
+
 Database
 - Run mongodb locally or in a host.
 - Currently it is running locally in the following address: "mongodb://localhost:27017/local"
@@ -59,5 +63,5 @@ The workflow of an admin user is shown. (user: Luna, password: mm24) <- After lo
 [![flow](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/employee_workflow.gif)](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/employee_workflow.gif)
 
 
-# Message
+# Final Message
 Hope You Enjoy the project!
