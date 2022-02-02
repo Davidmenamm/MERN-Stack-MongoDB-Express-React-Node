@@ -1,0 +1,266 @@
+[{
+  "_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-28T10:27:31.742Z"
+  },
+  "name": "David",
+  "apellido": "Mena",
+  "cedula": 1717943350,
+  "image": "file-1643504840606.png",
+  "correo": "david@gmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "typeAccount": "admin",
+  "password": "mm24",
+  "username": "David",
+  "cel": 998453221,
+  "dir": "Av. Tanda.",
+  "fechaNac": {
+    "$date": "2000-02-22T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2022-01-19T05:00:00Z"
+  },
+  "vaccine_dosis": 2,
+  "vaccine_status": "2",
+  "vaccine_type": "AstraZeneca"
+},{
+  "_id": {
+    "$oid": "61f57fddeda729b836eb76e0"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-28T10:28:41.219Z"
+  },
+  "name": "Luna",
+  "apellido": "Yepez",
+  "cedula": 1717914577,
+  "image": "file-1643504874997.png",
+  "correo": "luna100@gmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "typeAccount": "employee",
+  "password": "mm24",
+  "username": "Luna",
+  "fechaNac": {
+    "$date": "2001-01-23T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2021-10-12T05:00:00Z"
+  },
+  "cel": 998432566,
+  "dir": "Av. Occidental.",
+  "vaccine_dosis": 2,
+  "vaccine_status": "1",
+  "vaccine_type": "AstraZeneca"
+},{
+  "_id": {
+    "$oid": "61f57a92eda729b836eb76cc"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-28T10:29:29.519Z"
+  },
+  "name": "Pedro",
+  "apellido": "Suarez",
+  "cedula": 1822394563,
+  "image": "file-1643504890701.png",
+  "correo": "pedro1@hotmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "cel": 992524321,
+  "dir": "Av. Shyris.",
+  "fechaNac": {
+    "$date": "1998-01-13T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2021-02-10T05:00:00Z"
+  },
+  "vaccine_dosis": 1,
+  "vaccine_status": "1",
+  "vaccine_type": "Johnson",
+  "typeAccount": "employee",
+  "password": "mm24",
+  "username": "Cyro"
+},{
+  "_id": {
+    "$oid": "61f58000eda729b836eb76eb"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-28T10:30:03.796Z"
+  },
+  "name": "Nicolas",
+  "apellido": "Vasconez",
+  "cedula": 1788322511,
+  "image": "file-1643504904853.png",
+  "correo": "nicolas@outlook.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "fechaNac": {
+    "$date": "1994-01-19T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2022-01-25T05:00:00Z"
+  },
+  "vaccine_status": "0",
+  "vaccine_type": "Johnson",
+  "cel": 4242144242,
+  "dir": "Av. Brazil",
+  "typeAccount": "employee",
+  "password": "mm24",
+  "username": "Davicho",
+  "vaccine_dosis": 2
+},{
+  "_id": {
+    "$oid": "61f58014eda729b836eb76f1"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-28T10:30:43.722Z"
+  },
+  "name": "Melissa",
+  "apellido": "Lopez",
+  "cedula": 1744882136,
+  "image": "file-1643504984820.png",
+  "correo": "melissa2@protonmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "fechaNac": {
+    "$date": "2001-01-16T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2022-01-26T05:00:00Z"
+  },
+  "vaccine_status": "1",
+  "vaccine_type": "Pfizer",
+  "typeAccount": "employee",
+  "password": "mm24",
+  "username": "Melissa",
+  "cel": 944365522,
+  "dir": "Av. Inca.",
+  "vaccine_dosis": 1
+},{
+  "_id": {
+    "$oid": "61f58cf33f66a26f9c90843d"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-29T18:52:35.045Z"
+  },
+  "fechaNac": {
+    "$date": "1989-01-17T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2021-11-09T05:00:00Z"
+  },
+  "name": "Thais",
+  "apellido": "Lopez",
+  "cedula": 1599234577,
+  "image": "file-1643504940550.png",
+  "correo": "thais@gmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "cel": 846622119,
+  "dir": "Av. Naciones.",
+  "vaccine_dosis": 1,
+  "vaccine_status": "2",
+  "vaccine_type": "CoronaVac"
+},{
+  "_id": {
+    "$oid": "61f5db4b35ac30538c699d1d"
+  },
+  "is_delete": false,
+  "date": {
+    "$date": "2022-01-30T00:26:51.284Z"
+  },
+  "fechaNac": {
+    "$date": "1996-01-03T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2021-09-28T05:00:00Z"
+  },
+  "name": "Pamela",
+  "apellido": "Davalos",
+  "cedula": 1642233789,
+  "image": "file-1643504959544.png",
+  "correo": "pamela@hotmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "__v": 0,
+  "typeAccount": "employee",
+  "cel": 943322720,
+  "dir": "Av. Torres.",
+  "vaccine_dosis": 1,
+  "vaccine_status": "1",
+  "vaccine_type": "Sputnik"
+},{
+  "_id": {
+    "$oid": "61f5dc9ab5b53f46dcee7fe4"
+  },
+  "is_delete": true,
+  "date": {
+    "$date": "2022-01-30T00:32:26.982Z"
+  },
+  "fechaNac": {
+    "$date": "2022-01-30T00:32:26.982Z"
+  },
+  "vaccine_date": {
+    "$date": "2022-01-30T00:32:26.982Z"
+  },
+  "name": "Felipe",
+  "apellido": "Cruz",
+  "cedula": 1422558930,
+  "image": "file-1643504968433.png",
+  "correo": "felipe@outlook.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "typeAccount": "employee",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61f5ee2a7e6e6c5668db601a"
+  },
+  "is_delete": true,
+  "date": {
+    "$date": "2022-01-30T01:47:22.089Z"
+  },
+  "fechaNac": {
+    "$date": "1996-01-23T05:00:00Z"
+  },
+  "vaccine_date": {
+    "$date": "2021-09-08T05:00:00Z"
+  },
+  "name": "Thomas",
+  "apellido": "Cruz",
+  "cedula": 1714553220,
+  "image": "file-1643507242074.png",
+  "correo": "thomas20@gmail.com",
+  "user_id": {
+    "$oid": "61f57fbeeda729b836eb76d4"
+  },
+  "typeAccount": "employee",
+  "__v": 0,
+  "cel": 998750691,
+  "dir": "Av. Occidental.",
+  "vaccine_dosis": 1,
+  "vaccine_status": "1",
+  "vaccine_type": "Pfizer"
+}]
