@@ -1,10 +1,12 @@
 # MERN-Stack-MongoDB-Express-React-Node-
 MERN Stack (MongoDB, Express, React, Node) for Vaccine Registration at Kruger Coorporation.
 
+
 # Based on two template projects
 Login and Dashboard: https://github.com/FSojitra/Registration-Login-and-CRUD-Action-using-MERN-stack
 
 Profile: https://github.com/neysidev/user-profile
+
 
 # Project
 The project consists of a vaccine registration platform with login and users.
@@ -19,6 +21,7 @@ Dashboard (only admin)
 Profile (both type of users have access)
 
 Admin users can only access the employee that they have created.
+
 
 # Structure
 Frontend (React)
@@ -43,14 +46,18 @@ Database
 
 [![flow](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/database_img.png)](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/database_img.png)
 
+
 # Admin workflow
-The workflow of an admin user is shown.
+The workflow of an admin user is shown. (user: David, password: mm24) <- After loading the initial users in the database (users.json)
 
 [![flow](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/admin_workflow_19.gif)](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/admin_workflow_19.gif)
 
 
 # Employee workflow
-The workflow of an admin user is shown.
+The workflow of an admin user is shown. (user: Luna, password: mm24) <- After loading the initial users in the database (users.json)
 
 [![flow](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/employee_workflow.gif)](https://github.com/Davidmenamm/MERN-Stack-MongoDB-Express-React-Node/blob/main/employee_workflow.gif)
 
+
+# Message
+Hope You Enjoy the project!
